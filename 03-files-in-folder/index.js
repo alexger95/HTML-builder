@@ -9,12 +9,9 @@ fs.promises.readdir(folder)
     const fDirect = path.join(__dirname, 'secret-folder', filename);
     fs.promises.stat(fDirect)
     .then(fstats => {
-      if (fstats.isDirectory()) {
-        console.log('Directory')
-      } else {
-        console.log('File')
+      if (fstats.isFile()) {
+        console.log('File: ',filename, ' ', parseFloat((fstats.size / 8000).toFixed(3)), "kb")
       }
-      console.log(fstats)
     })
       
   }

@@ -1,21 +1,30 @@
-const {stdout, stdin, exit} = process;
-const fs = require('fs');
-const path = require('path');
+const fs = require("fs");
+const path = require("path");
+const readline = require("readline");
+const { stdin: input, stdout: output } = require("process");
 
-stdout.write('Hello Node how are you? \n');
-stdin.on('data', (data) => {
-  fs.writeFile(
-    path.join(__dirname, 'notes.json'),
-    data,
-    err => {
-        if (err) throw err;
-        console.log('Файл был изменен');
+
+const outStream = fs.createWriteStream(path.join(__dirname, 'notes.json'));
+
+const rl = readline.createInterface({ input, output });
+
+const rLine = () => {
+  rl.question("Hello Node how are you? \n", (data) => {
+    if (data === "exit") {
+      return rl.close();
     }
-);
+    outStream.write(`\n ${data}`);
+    rLine();
+  });
+};
+
+rLine();
+
+
+process.on("SIGINT", () => {
+  console.log("Bye bye!");
 });
 
-// const stream = fs.createReadStream(path.join(__dirname,'text.txt'), 'utf-8');
-// let data = '';
-// stream.on('data', chunk => data += chunk);
-// stream.on('end', () => console.log(data));
-// stream.on('error', (e) => console.log('error', e));
+process.on("exit", () => {
+  console.log("Bye bye!");
+});
